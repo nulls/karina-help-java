@@ -12,8 +12,6 @@ public class Main {
         System.out.printf("Введите eps: ");
         final double eps = sc.nextDouble();
 
-        Root.DEBUG = true;
-        Root.LAMBDA_MODE = Root.LambdaMode.Xi;
         final Root root = new Root(a, b, eps);
         System.out.printf("Результат: %f", root.resolve());
     }
