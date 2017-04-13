@@ -1,11 +1,20 @@
 package edu.karina.java;
 
-import edu.karina.java.function.Function1;
+import edu.karina.java.function.*;
 
 public class Root {
     public static boolean DEBUG;
 
-    public static int MAX_ITERATION = 100;
+    public static int MAX_ITERATION = 1_000_000;
+
+    public enum LambdaMode {
+        X0,
+        MAX,
+        Xi,
+        ;
+    }
+
+    public static LambdaMode LAMBDA_MODE = LambdaMode.Xi;
 
     private final double a, b;
     private final double eps;
@@ -18,7 +27,7 @@ public class Root {
     }
 
     private double f(double x) {
-        return Function1.f(x);
+        return Function2.f(x);
     }
 
     private double derivativeF(double x) {
@@ -36,17 +45,21 @@ public class Root {
         return max;
     }
 
-    private double getBetterLambda() {
-        return 1 / findMaxDerivativeF();
-    }
-
     private double getLambda(double x) {
-        //return getBetterLambda();
-        return 1 / derivativeF(x);
+        switch (LAMBDA_MODE) {
+            case X0:
+                return 1 / derivativeF(getX0());
+            case MAX:
+                return 1 / findMaxDerivativeF();
+            case Xi:
+                return 1 / derivativeF(x);
+            default:
+                throw new IllegalStateException("");
+        }
     }
 
     private double nextX(double x) {
-        return x - getLambda(getX0()) * f(x);
+        return x - getLambda(x) * f(x);
     }
 
     private double getX0() {
